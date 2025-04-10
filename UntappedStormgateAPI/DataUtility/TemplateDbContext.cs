@@ -10,6 +10,6 @@ public class TemplateDbContext : DbContext
     {
     }
 
-    public DbSet<Person> Persons { get; set; }
+    //public DbSet<Person> Persons { get; set; }
    
 }
