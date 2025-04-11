@@ -2,16 +2,17 @@
 using System.Text.Json;
 using UntappedAPI.DataUtility;
 using UntappedAPI.Models;
+using UntappedAPI.Models.PlayerStats.AllMetaPeriods;
 
 namespace UntappedAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class PlayerController : ControllerBase
+public class StormgateController : ControllerBase
 {
     private readonly TemplateDbContext _templateDbContext;
 
-    public PlayerController(TemplateDbContext templateDbContext)
+    public StormgateController(TemplateDbContext templateDbContext)
     {
         _templateDbContext = templateDbContext; //Todo
     }
@@ -24,7 +25,7 @@ public class PlayerController : ControllerBase
     /// <param name="displayName"></param>
     /// <returns></returns>
     [HttpGet("Search")]
-    public async Task<IActionResult> Search(string displayName = "ByteBender")
+    public async Task<IActionResult> GetPlayerSearch(string displayName = "ByteBender")
     {
         var url = $"https://api.stormgate.untapped.gg/api/v1/players?q={Uri.EscapeDataString(displayName)}";
 
@@ -49,7 +50,7 @@ public class PlayerController : ControllerBase
     /// <param name="profileId"></param>
     /// <returns></returns>
     [HttpGet("Lookup")]
-    public async Task<IActionResult> Lookup(string profileId)
+    public async Task<IActionResult> GetPlayerLookup(string profileId)
     {
         var url = $"https://api.stormgate.untapped.gg/api/v1/players/{profileId}";
 
@@ -67,8 +68,15 @@ public class PlayerController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Get player stats by profileId, default is "ranked_1v1" and "current" season
+    /// </summary>
+    /// <param name="profileId"></param>
+    /// <param name="matchMode"></param>
+    /// <param name="season"></param>
+    /// <returns></returns>
     [HttpGet("PlayerStats")]
-    public async Task<IActionResult> PlayerStats(string profileId, string matchMode = "ranked_1v1", string season = "current")
+    public async Task<IActionResult> GetPlayerStats(string profileId, string matchMode = "ranked_1v1", string season = "current")
     {
         var url = $"https://api.stormgate.untapped.gg/api/v2/matches/players/{profileId}/stats/{matchMode}?season={season}";
 
@@ -80,17 +88,34 @@ public class PlayerController : ControllerBase
             return NotFound($"Player with name {profileId} not found.");
         }
 
-        //TODO: Why is this PlayerStats null? 
-        var PlayerStats = await response.Content.ReadFromJsonAsync<PlayerStats>();
+        var playerStatsRAW = await response.Content.ReadAsStringAsync();
+
+        var playerStatsAllMetaPeriodsCurated = await response.Content.ReadFromJsonAsync<PlayerStatsAllMetaPeriodsCurated>();
 
 
-        return Ok(PlayerStats);
+
+        return Ok(playerStatsAllMetaPeriodsCurated);
     }
+    [HttpGet("MetaPeriods")]
+    public async Task<IActionResult> GetMetaPeriods()
+    {
+        var url = "https://api.stormgate.untapped.gg/api/v1/meta-periods";
+
+        using HttpClient client = new();
+        var response = await client.GetAsync(url);
+
+        if (response.IsSuccessStatusCode is false)
+        {
+            return NotFound("Failed to retrieve meta periods.");
+        }
+
+        var metaPeriodsRAW = await response.Content.ReadAsStringAsync();
+
+        var metaPeriods = await response.Content.ReadFromJsonAsync<List<MetaPeriod>>();
 
 
-
-
-
+        return Ok(metaPeriods);
+    }
 }
 
 
