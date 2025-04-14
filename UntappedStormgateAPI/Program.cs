@@ -18,7 +18,8 @@ namespace UntappedAPI
             builder.Services.AddSwaggerGen();
 
             // custom Services
-            builder.Services.AddScoped<PlayerInformationService>();
+            builder.Services.AddScoped<UntappedApiService>();
+            builder.Services.AddScoped<PlayerDiscoveryService>();
 
             // Register the TemplateDbContext with dependency injection  
             builder.Services.AddDbContext<TemplateDbContext>(options =>

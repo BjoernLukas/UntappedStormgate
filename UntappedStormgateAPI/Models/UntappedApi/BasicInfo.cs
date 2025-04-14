@@ -1,11 +1,11 @@
 ﻿namespace UntappedAPI.Models.Untapped
 {
 
-    public class PlayerBasicInfo
+    public class BasicInfo
     {
-        public Ranks Ranks { get; set; }
         public string PlayerName { get; set; }
         public string ProfileId { get; set; }
+        public Ranks Ranks { get; set; }    
         public MatchHistoryVisibility MatchHistoryVisibility { get; set; }
         public ReplayVisibility ReplayVisibility { get; set; }
     }

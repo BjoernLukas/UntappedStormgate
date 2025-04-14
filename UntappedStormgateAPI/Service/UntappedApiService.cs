@@ -4,9 +4,9 @@ using UntappedAPI.Models.Untapped.PlayerStats;
 
 namespace UntappedAPI.Service
 {
-    public class PlayerInformationService
+    public class UntappedApiService
     {
-        public async Task<PlayerBasicInfo> GetPlayerBasicInfoByDisplayName(string displayName)
+        public async Task<BasicInfo> GetPlayerBasicInfoByDisplayName(string displayName)
         {
             var url = $"https://api.stormgate.untapped.gg/api/v1/players?q={Uri.EscapeDataString(displayName)}";
 
@@ -17,7 +17,7 @@ namespace UntappedAPI.Service
             {
                 throw new($"Player with name {displayName} not found.");
             }
-            var PlayerInfoResponse = await response.Content.ReadFromJsonAsync<List<PlayerBasicInfo>>();
+            var PlayerInfoResponse = await response.Content.ReadFromJsonAsync<List<BasicInfo>>();
 
             var playerInfo = PlayerInfoResponse?.Single();
 
@@ -25,7 +25,7 @@ namespace UntappedAPI.Service
             return playerInfo ?? throw new();
         }
 
-        public async Task<PlayerBasicInfo> GetPlayerBasicInfoById(string id)
+        public async Task<BasicInfo> GetPlayerBasicInfoById(string id)
         {
             var url = $"https://api.stormgate.untapped.gg/api/v1/players/{id}";
 
@@ -37,7 +37,7 @@ namespace UntappedAPI.Service
                 throw new($"Player with id {id} not found.");
             }
 
-            var result = await response.Content.ReadFromJsonAsync<PlayerBasicInfo>();
+            var result = await response.Content.ReadFromJsonAsync<BasicInfo>();
 
             return result ?? throw new();
         }
@@ -45,7 +45,7 @@ namespace UntappedAPI.Service
 
 
 
-        public async Task<PlayerStatsAllMetaPeriodsCurated> GetPlayerStats(string profileId, string matchMode, string season)
+        public async Task<CuratedPlayerStats> GetPlayerStats(string profileId, string matchMode, string season)
         {
             var url = $"https://api.stormgate.untapped.gg/api/v2/matches/players/{profileId}/stats/{matchMode}?season={season}";
 
@@ -57,7 +57,7 @@ namespace UntappedAPI.Service
                 throw new($"Player: {profileId} not found.");
             }
 
-            var playerStatsAllMetaPeriodsCurated = await response.Content.ReadFromJsonAsync<PlayerStatsAllMetaPeriodsCurated>();
+            var playerStatsAllMetaPeriodsCurated = await response.Content.ReadFromJsonAsync<CuratedPlayerStats>();
 
             return playerStatsAllMetaPeriodsCurated ?? throw new($"Player: {profileId} id not have any playerStats");
         }

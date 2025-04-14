@@ -11,9 +11,9 @@ namespace UntappedAPI.Controllers;
 [Route("api/[controller]")]
 public class UntappedApiController : ControllerBase
 {
-    private readonly PlayerInformationService _dataCollectorService;
+    private readonly UntappedApiService _dataCollectorService;
 
-    public UntappedApiController(PlayerInformationService dataCollectorService)
+    public UntappedApiController(UntappedApiService dataCollectorService)
     {
         _dataCollectorService = dataCollectorService;
     }
@@ -68,7 +68,7 @@ public class UntappedApiController : ControllerBase
         {
             return NotFound($"Player with name {profileId} not found.");
         }       
-        var playerStatsAllMetaPeriodsCurated = await response.Content.ReadFromJsonAsync<PlayerStatsAllMetaPeriodsCurated>();
+        var playerStatsAllMetaPeriodsCurated = await response.Content.ReadFromJsonAsync<CuratedPlayerStats>();
 
         return Ok(playerStatsAllMetaPeriodsCurated);
     }

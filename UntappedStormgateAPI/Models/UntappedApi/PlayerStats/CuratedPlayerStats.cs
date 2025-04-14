@@ -2,7 +2,7 @@
 
 namespace UntappedAPI.Models.Untapped.PlayerStats
 {
-    public class PlayerStatsAllMetaPeriodsCurated
+    public class CuratedPlayerStats
     {
         public All All { get; set; }
     }
