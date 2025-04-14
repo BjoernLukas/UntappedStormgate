@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UntappedAPI.DataUtility;
+using UntappedAPI.Service;
 
 namespace UntappedAPI
 {
@@ -15,6 +16,9 @@ namespace UntappedAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // custom Services
+            builder.Services.AddScoped<PlayerInformationService>();
 
             // Register the TemplateDbContext with dependency injection  
             builder.Services.AddDbContext<TemplateDbContext>(options =>

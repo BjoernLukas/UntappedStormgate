@@ -1,21 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using UntappedAPI.DataUtility;
-using UntappedAPI.Models;
-using UntappedAPI.Models.PlayerStats.AllMetaPeriods;
+using UntappedAPI.Models.Untapped;
+using UntappedAPI.Models.Untapped.PlayerStats;
+using UntappedAPI.Service;
 
 namespace UntappedAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class StormgateController : ControllerBase
+public class UntappedApiController : ControllerBase
 {
-    private readonly TemplateDbContext _templateDbContext;
+    private readonly PlayerInformationService _dataCollectorService;
 
-    public StormgateController(TemplateDbContext templateDbContext)
+    public UntappedApiController(PlayerInformationService dataCollectorService)
     {
-        _templateDbContext = templateDbContext; //Todo
+        _dataCollectorService = dataCollectorService;
     }
+
 
 
     /// <summary>
@@ -24,23 +26,12 @@ public class StormgateController : ControllerBase
     /// </summary>
     /// <param name="displayName"></param>
     /// <returns></returns>
-    [HttpGet("Search")]
-    public async Task<IActionResult> GetPlayerSearch(string displayName = "ByteBender")
+    [HttpGet("GetPlayerBasicInfoByDisplayName")]
+    public async Task<IActionResult> GetPlayerBasicInfoByDisplayName(string displayName = "ByteBender")
     {
-        var url = $"https://api.stormgate.untapped.gg/api/v1/players?q={Uri.EscapeDataString(displayName)}";
+        var result = await _dataCollectorService.GetPlayerBasicInfoByDisplayName(displayName);
 
-        using HttpClient client = new();
-        var response = await client.GetAsync(url);
-
-        if (response.IsSuccessStatusCode is false)
-        {
-            return NotFound($"Player with name {displayName} not found.");
-        }
-        var PlayerInfoResponse = await response.Content.ReadFromJsonAsync<List<PlayerBasicInfo>>();
-
-        var playerInfo = PlayerInfoResponse?.Single();
-
-        return Ok(playerInfo);
+        return Ok(result);
     }
 
 
@@ -49,23 +40,13 @@ public class StormgateController : ControllerBase
     /// </summary>
     /// <param name="profileId"></param>
     /// <returns></returns>
-    [HttpGet("Lookup")]
-    public async Task<IActionResult> GetPlayerLookup(string profileId)
+    [HttpGet("GetPlayerBasicInfoById")]
+    public async Task<IActionResult> GetPlayerBasicInfoById(string profileId)
     {
-        var url = $"https://api.stormgate.untapped.gg/api/v1/players/{profileId}";
+      
+        var result = await _dataCollectorService.GetPlayerBasicInfoById(profileId);
 
-        using HttpClient client = new();
-        var response = await client.GetAsync(url);
-
-        if (response.IsSuccessStatusCode is false)
-        {
-            return NotFound($"Player with name {profileId} not found.");
-        }
-
-        var PlayerLookupResponse = await response.Content.ReadFromJsonAsync<PlayerBasicInfo>();
-
-
-        return Ok();
+        return Ok(result);
     }
 
     /// <summary>
@@ -86,13 +67,8 @@ public class StormgateController : ControllerBase
         if (response.IsSuccessStatusCode is false)
         {
             return NotFound($"Player with name {profileId} not found.");
-        }
-
-        var playerStatsRAW = await response.Content.ReadAsStringAsync();
-
+        }       
         var playerStatsAllMetaPeriodsCurated = await response.Content.ReadFromJsonAsync<PlayerStatsAllMetaPeriodsCurated>();
-
-
 
         return Ok(playerStatsAllMetaPeriodsCurated);
     }

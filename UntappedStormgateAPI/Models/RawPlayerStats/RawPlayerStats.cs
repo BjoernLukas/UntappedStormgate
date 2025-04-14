@@ -1,4 +1,4 @@
-﻿namespace UntappedAPI.DataUtility.RawPlayerStats
+﻿namespace UntappedAPI.Models.RawPlayerStats
 {
 
     public class RawPlayerStats

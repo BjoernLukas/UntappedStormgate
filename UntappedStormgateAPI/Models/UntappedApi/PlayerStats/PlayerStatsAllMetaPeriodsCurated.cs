@@ -1,6 +1,6 @@
-﻿using UntappedAPI.Models.PlayerStats.RawPlayerStats;
+﻿
 
-namespace UntappedAPI.Models.PlayerStats.AllMetaPeriods
+namespace UntappedAPI.Models.Untapped.PlayerStats
 {
     public class PlayerStatsAllMetaPeriodsCurated
     {

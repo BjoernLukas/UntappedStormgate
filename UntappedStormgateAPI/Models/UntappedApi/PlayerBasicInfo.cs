@@ -1,4 +1,4 @@
-﻿namespace UntappedAPI.Models
+﻿namespace UntappedAPI.Models.Untapped
 {
 
     public class PlayerBasicInfo
