@@ -39,7 +39,7 @@ public class FindActivePlayersController : ControllerBase
     public async Task<IActionResult> TestDbContextWithPlayer()
     {
         // Call the method to test the DbContext with a player
-        var result = await _playerDiscoveryService.TestDbContextWithPlayer();
+        var result =  _playerDiscoveryService.TestDbContextWithPlayer();
 
         return Ok(result);
     }

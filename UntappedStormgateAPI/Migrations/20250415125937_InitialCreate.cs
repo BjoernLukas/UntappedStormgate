@@ -15,8 +15,7 @@ namespace UntappedAPI.Migrations
                 name: "Celestials",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     League = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Losses = table.Column<int>(type: "int", nullable: false),
                     Mmr = table.Column<int>(type: "int", nullable: false),
@@ -35,8 +34,7 @@ namespace UntappedAPI.Migrations
                 name: "CelestialsPlayerStats",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Recent_mmr_history = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -48,8 +46,7 @@ namespace UntappedAPI.Migrations
                 name: "Infernals",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     League = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Losses = table.Column<int>(type: "int", nullable: false),
                     Mmr = table.Column<int>(type: "int", nullable: false),
@@ -68,8 +65,7 @@ namespace UntappedAPI.Migrations
                 name: "InfernalsPlayerStats",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Recent_mmr_history = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -81,8 +77,7 @@ namespace UntappedAPI.Migrations
                 name: "MatchHistoryVisibility",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RANKED_1V1 = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -94,8 +89,7 @@ namespace UntappedAPI.Migrations
                 name: "ReplayVisibility",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RANKED_1V1 = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -107,8 +101,7 @@ namespace UntappedAPI.Migrations
                 name: "Vanguard",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     League = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Losses = table.Column<int>(type: "int", nullable: false),
                     Mmr = table.Column<int>(type: "int", nullable: false),
@@ -127,8 +120,7 @@ namespace UntappedAPI.Migrations
                 name: "VanguardPlayerStats",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Recent_mmr_history = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -140,11 +132,10 @@ namespace UntappedAPI.Migrations
                 name: "Ranked1v1",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    VanguardId = table.Column<int>(type: "int", nullable: false),
-                    InfernalsId = table.Column<int>(type: "int", nullable: false),
-                    CelestialsId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    VanguardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    InfernalsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CelestialsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -173,11 +164,10 @@ namespace UntappedAPI.Migrations
                 name: "All",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    VanguardId = table.Column<int>(type: "int", nullable: false),
-                    InfernalsId = table.Column<int>(type: "int", nullable: false),
-                    CelestialsId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    VanguardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    InfernalsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CelestialsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -206,17 +196,16 @@ namespace UntappedAPI.Migrations
                 name: "Outcomes_By_Opponent",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     player_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     profile_id = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     race = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     wins = table.Column<int>(type: "int", nullable: false),
                     losses = table.Column<int>(type: "int", nullable: false),
                     ties = table.Column<int>(type: "int", nullable: false),
-                    CelestialsPlayerStatsId = table.Column<int>(type: "int", nullable: true),
-                    InfernalsPlayerStatsId = table.Column<int>(type: "int", nullable: true),
-                    VanguardPlayerStatsId = table.Column<int>(type: "int", nullable: true)
+                    CelestialsPlayerStatsId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    InfernalsPlayerStatsId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    VanguardPlayerStatsId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -242,9 +231,8 @@ namespace UntappedAPI.Migrations
                 name: "Ranks",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Ranked1v1Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Ranked1v1Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -261,13 +249,12 @@ namespace UntappedAPI.Migrations
                 name: "CuratedStats",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AllId = table.Column<int>(type: "int", nullable: false)
+                    CuratedStatsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AllId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CuratedStats", x => x.Id);
+                    table.PrimaryKey("PK_CuratedStats", x => x.CuratedStatsId);
                     table.ForeignKey(
                         name: "FK_CuratedStats_All_AllId",
                         column: x => x.AllId,
@@ -282,9 +269,9 @@ namespace UntappedAPI.Migrations
                 {
                     ProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PlayerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RanksId = table.Column<int>(type: "int", nullable: false),
-                    MatchHistoryVisibilityId = table.Column<int>(type: "int", nullable: false),
-                    ReplayVisibilityId = table.Column<int>(type: "int", nullable: false)
+                    RanksId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MatchHistoryVisibilityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReplayVisibilityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -317,7 +304,7 @@ namespace UntappedAPI.Migrations
                     PlayerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastSnapshot = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ProfileId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    CuratedStatsId = table.Column<int>(type: "int", nullable: true)
+                    CuratedStatsId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -326,7 +313,7 @@ namespace UntappedAPI.Migrations
                         name: "FK_PlayerSnapshot_CuratedStats_CuratedStatsId",
                         column: x => x.CuratedStatsId,
                         principalTable: "CuratedStats",
-                        principalColumn: "Id");
+                        principalColumn: "CuratedStatsId");
                     table.ForeignKey(
                         name: "FK_PlayerSnapshot_Profile_ProfileId",
                         column: x => x.ProfileId,

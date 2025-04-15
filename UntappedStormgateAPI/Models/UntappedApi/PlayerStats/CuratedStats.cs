@@ -4,49 +4,41 @@ namespace UntappedAPI.Models.Untapped.PlayerStats
 {
     public class CuratedStats
     {
-        public int Id { get; init; }
+        public Guid CuratedStatsId { get; init; } = Guid.NewGuid();
         public All All { get; set; }
     }
     public class All
     {
-        public int Id { get; init; }
+        public Guid Id { get; init; } = Guid.NewGuid();
         public VanguardPlayerStats Vanguard { get; set; }
-
         public InfernalsPlayerStats Infernals { get; set; }
-
         public CelestialsPlayerStats Celestials { get; set; }
     }
 
     public class VanguardPlayerStats
     {
-        public int Id { get; init; }
-        public int[] Recent_mmr_history { get; set; }
-
-        public Outcomes_By_Opponent[] outcomes_by_opponent { get; set; }
-
+        public Guid Id { get; init; } = Guid.NewGuid();
+        public List<int> Recent_mmr_history { get; set; } = new();
+        public List<Outcomes_By_Opponent> outcomes_by_opponent { get; set; } = new();
     }
 
     public class InfernalsPlayerStats
     {
-        public int Id { get; init; }
-        public int[] Recent_mmr_history { get; set; }
-
-        public Outcomes_By_Opponent[] outcomes_by_opponent { get; set; }
-
+        public Guid Id { get; init; } = Guid.NewGuid();
+        public List<int> Recent_mmr_history { get; set; } = new();
+        public List<Outcomes_By_Opponent> outcomes_by_opponent { get; set; } = new();
     }
 
     public class CelestialsPlayerStats
     {
-        public int Id { get; init; }
-        public int[] Recent_mmr_history { get; set; }
-
-        public Outcomes_By_Opponent[] outcomes_by_opponent { get; set; }
-
+        public Guid Id { get; init; } = Guid.NewGuid();
+        public List<int> Recent_mmr_history { get; set; } = new();
+        public List<Outcomes_By_Opponent> outcomes_by_opponent { get; set; } = new();
     }
 
     public class Outcomes_By_Opponent
     {
-        public int Id { get; init; }
+        public Guid Id { get; init; } = Guid.NewGuid();
         public string player_name { get; set; }
         public string profile_id { get; set; }
         public string race { get; set; }

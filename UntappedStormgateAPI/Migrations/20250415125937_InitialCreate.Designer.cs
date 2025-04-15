@@ -12,7 +12,7 @@ using UntappedAPI.DataUtility;
 namespace UntappedAPI.Migrations
 {
     [DbContext(typeof(UntappedDbContext))]
-    [Migration("20250415083444_InitialCreate")]
+    [Migration("20250415125937_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -30,8 +30,8 @@ namespace UntappedAPI.Migrations
                     b.Property<string>("PlayerSnapshotId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("CuratedStatsId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CuratedStatsId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("LastSnapshot")
                         .HasColumnType("datetime2");
@@ -54,11 +54,9 @@ namespace UntappedAPI.Migrations
 
             modelBuilder.Entity("UntappedAPI.Models.Untapped.Celestials", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("League")
                         .IsRequired()
@@ -92,11 +90,9 @@ namespace UntappedAPI.Migrations
 
             modelBuilder.Entity("UntappedAPI.Models.Untapped.Infernals", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("League")
                         .IsRequired()
@@ -130,11 +126,9 @@ namespace UntappedAPI.Migrations
 
             modelBuilder.Entity("UntappedAPI.Models.Untapped.MatchHistoryVisibility", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("RANKED_1V1")
                         .HasColumnType("bit");
@@ -146,20 +140,18 @@ namespace UntappedAPI.Migrations
 
             modelBuilder.Entity("UntappedAPI.Models.Untapped.PlayerStats.All", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("CelestialsId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CelestialsId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("InfernalsId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("InfernalsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VanguardId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("VanguardId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -174,11 +166,9 @@ namespace UntappedAPI.Migrations
 
             modelBuilder.Entity("UntappedAPI.Models.Untapped.PlayerStats.CelestialsPlayerStats", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.PrimitiveCollection<string>("Recent_mmr_history")
                         .IsRequired()
@@ -191,16 +181,14 @@ namespace UntappedAPI.Migrations
 
             modelBuilder.Entity("UntappedAPI.Models.Untapped.PlayerStats.CuratedStats", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("CuratedStatsId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("AllId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AllId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
+                    b.HasKey("CuratedStatsId");
 
                     b.HasIndex("AllId");
 
@@ -209,11 +197,9 @@ namespace UntappedAPI.Migrations
 
             modelBuilder.Entity("UntappedAPI.Models.Untapped.PlayerStats.InfernalsPlayerStats", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.PrimitiveCollection<string>("Recent_mmr_history")
                         .IsRequired()
@@ -226,20 +212,18 @@ namespace UntappedAPI.Migrations
 
             modelBuilder.Entity("UntappedAPI.Models.Untapped.PlayerStats.Outcomes_By_Opponent", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid?>("CelestialsPlayerStatsId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("CelestialsPlayerStatsId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("InfernalsPlayerStatsId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("InfernalsPlayerStatsId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("VanguardPlayerStatsId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("VanguardPlayerStatsId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("losses")
                         .HasColumnType("int");
@@ -275,11 +259,9 @@ namespace UntappedAPI.Migrations
 
             modelBuilder.Entity("UntappedAPI.Models.Untapped.PlayerStats.VanguardPlayerStats", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.PrimitiveCollection<string>("Recent_mmr_history")
                         .IsRequired()
@@ -295,18 +277,18 @@ namespace UntappedAPI.Migrations
                     b.Property<string>("ProfileId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("MatchHistoryVisibilityId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("MatchHistoryVisibilityId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("PlayerName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RanksId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("RanksId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ReplayVisibilityId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ReplayVisibilityId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ProfileId");
 
@@ -321,20 +303,18 @@ namespace UntappedAPI.Migrations
 
             modelBuilder.Entity("UntappedAPI.Models.Untapped.Ranked1v1", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("CelestialsId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CelestialsId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("InfernalsId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("InfernalsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VanguardId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("VanguardId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -349,14 +329,12 @@ namespace UntappedAPI.Migrations
 
             modelBuilder.Entity("UntappedAPI.Models.Untapped.Ranks", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Ranked1v1Id")
-                        .HasColumnType("int");
+                    b.Property<Guid>("Ranked1v1Id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -367,11 +345,9 @@ namespace UntappedAPI.Migrations
 
             modelBuilder.Entity("UntappedAPI.Models.Untapped.ReplayVisibility", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("RANKED_1V1")
                         .HasColumnType("bit");
@@ -383,11 +359,9 @@ namespace UntappedAPI.Migrations
 
             modelBuilder.Entity("UntappedAPI.Models.Untapped.Vanguard", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("League")
                         .IsRequired()

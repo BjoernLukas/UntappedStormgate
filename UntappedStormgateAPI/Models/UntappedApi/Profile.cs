@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace UntappedAPI.Models.Untapped
 {
@@ -9,20 +10,24 @@ namespace UntappedAPI.Models.Untapped
         public required string ProfileId { get; set; }
 
         public required string PlayerName { get; set; }
-        public Ranks Ranks { get; set; }    
-        public MatchHistoryVisibility MatchHistoryVisibility { get; set; }
-        public ReplayVisibility ReplayVisibility { get; set; }
-    }
+        public required Ranks Ranks { get; set; }    
+        public  MatchHistoryVisibility MatchHistoryVisibility { get; set; }
+        public  ReplayVisibility ReplayVisibility { get; set; }
 
+
+       
+    }
     public class Ranks
     {
-        public int Id { get; init; }
+        public Guid Id { get; init; } = Guid.NewGuid();
         public Ranked1v1 Ranked1v1 { get; set; }
     }
 
+
     public class Ranked1v1
     {
-        public int Id { get; init; }
+
+        public Guid Id { get; init; } = Guid.NewGuid();
         public Vanguard Vanguard { get; set; }
         public Infernals Infernals { get; set; }
         public Celestials Celestials { get; set; }
@@ -30,7 +35,7 @@ namespace UntappedAPI.Models.Untapped
 
     public class Vanguard
     {
-        public int Id { get; init; }
+        public Guid Id { get; init; } = Guid.NewGuid();
         public string League { get; set; }
         public int Losses { get; set; }
         public int Mmr { get; set; }
@@ -43,7 +48,7 @@ namespace UntappedAPI.Models.Untapped
 
     public class Infernals
     {
-        public int Id { get; init; }
+        public Guid Id { get; init; } = Guid.NewGuid();
         public string League { get; set; }
         public int Losses { get; set; }
         public int Mmr { get; set; }
@@ -56,7 +61,7 @@ namespace UntappedAPI.Models.Untapped
 
     public class Celestials
     {
-        public int Id { get; init; }
+        public Guid Id { get; init; } = Guid.NewGuid();
         public string League { get; set; }
         public int Losses { get; set; }
         public int Mmr { get; set; }
@@ -69,13 +74,13 @@ namespace UntappedAPI.Models.Untapped
 
     public class MatchHistoryVisibility
     {
-        public int Id { get; init; }
+        public Guid Id { get; init; } = Guid.NewGuid();
         public bool RANKED_1V1 { get; set; }
     }
 
     public class ReplayVisibility
     {
-        public int Id { get; init; }
+        public Guid Id { get; init; } = Guid.NewGuid();
         public bool RANKED_1V1 { get; set; }
     }
 }

@@ -20,15 +20,15 @@ namespace UntappedAPI.Service
             _untappedDbContext = untappedDbContext;
         }
 
-        public async Task<string> TestDbContextWithPlayer(string profileId = "VF92gcD") // ByteBender
+        public string TestDbContextWithPlayer(string profileId = "VF92gcD") // ByteBender
         {
                       
 
-            var playerSnapshot = await CreatePlayerInfoSnapshot(profileId);
+            var playerSnapshot = CreatePlayerInfoSnapshot(profileId).Result;
 
-            _untappedDbContext.PlayerSnapshot.Add(playerSnapshot);
+            _untappedDbContext.Set<PlayerSnapshot>().Add(playerSnapshot);
 
-            await _untappedDbContext.SaveChangesAsync();
+            _untappedDbContext.SaveChanges();
 
 
             return $"PlayersSnapshot saved {profileId}";
