@@ -11,7 +11,7 @@ namespace UntappedAPI.Controllers;
 [Route("api/[controller]")]
 public class FindActivePlayersController : ControllerBase
 {
-   private readonly PlayerDiscoveryService _playerDiscoveryService;
+    private readonly PlayerDiscoveryService _playerDiscoveryService;
 
     public FindActivePlayersController(PlayerDiscoveryService playerDiscoveryService)
     {
@@ -26,16 +26,23 @@ public class FindActivePlayersController : ControllerBase
     [HttpGet("StartOnByteBender")]
     public async Task<IActionResult> StartOnByteBender()
     {
-       var result = await _playerDiscoveryService.StartDiscoveryOnSpecificPlayer("VF92gcD"); // ByteBender
-
-
-
+        var result = await _playerDiscoveryService.StartDiscoveryOnSpecificPlayer("VF92gcD"); // ByteBender
 
         return Ok(result);
-    }     
+    }
 
+    /// <summary>
+    /// Test the DbContext with a player.
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("TestDbContextWithPlayer")]
+    public async Task<IActionResult> TestDbContextWithPlayer()
+    {
+        // Call the method to test the DbContext with a player
+        var result = await _playerDiscoveryService.TestDbContextWithPlayer();
 
-   
+        return Ok(result);
+    }
 }
 
 

@@ -1,4 +1,5 @@
-﻿using UntappedAPI.Models;
+﻿using UntappedAPI.DataUtility;
+using UntappedAPI.Models;
 using UntappedAPI.Models.Untapped.PlayerStats;
 
 namespace UntappedAPI.Service
@@ -6,16 +7,36 @@ namespace UntappedAPI.Service
     public class PlayerDiscoveryService
     {
 
-        private readonly UntappedApiService _dataCollectorService;
+        private readonly UntappedApiService _untappedApiService;
+        private readonly UntappedDbContext _untappedDbContext;
         private Queue<string> _playerIdsQueue;
-        private List<PlayerInfoSnapshot> _playerInfoSnapshots;
+        private List<PlayerSnapshot> _playerInfoSnapshots;
 
-        public PlayerDiscoveryService(UntappedApiService dataCollectorService)
+        public PlayerDiscoveryService(UntappedApiService dataCollectorService, UntappedDbContext untappedDbContext)
         {
-            _dataCollectorService = dataCollectorService;
+            _untappedApiService = dataCollectorService;
             _playerIdsQueue = new Queue<string>();
-            _playerInfoSnapshots = new List<PlayerInfoSnapshot>();
+            _playerInfoSnapshots = new List<PlayerSnapshot>();
+            _untappedDbContext = untappedDbContext;
         }
+
+        public async Task<string> TestDbContextWithPlayer(string profileId = "VF92gcD") // ByteBender
+        {
+                      
+
+            var playerSnapshot = await CreatePlayerInfoSnapshot(profileId);
+
+            _untappedDbContext.PlayerSnapshot.Add(playerSnapshot);
+
+            await _untappedDbContext.SaveChangesAsync();
+
+
+            return $"PlayersSnapshot saved {profileId}";
+        }
+
+
+
+
 
         /// <summary>
         /// Start on Player (default ByteBender) work from there.
@@ -55,51 +76,51 @@ namespace UntappedAPI.Service
 
         }
 
-        private async Task<PlayerInfoSnapshot> CreatePlayerInfoSnapshot(string profile_id)
+        private async Task<PlayerSnapshot> CreatePlayerInfoSnapshot(string profile_id)
         {
-            var playerBasicInfo = await _dataCollectorService.GetPlayerBasicInfoById(profile_id);
-            var playerStatsAllMetaPeriodsCurated = await _dataCollectorService.GetPlayerStats(profile_id, "ranked_1v1", "current");
+            var playerBasicInfo = await _untappedApiService.GetPlayerBasicInfoById(profile_id);
+            var playerStatsAllMetaPeriodsCurated = await _untappedApiService.GetPlayerStats(profile_id, "ranked_1v1", "current");
 
-            var playerInfoSnapshot = new PlayerInfoSnapshot
+            var playerInfoSnapshot = new PlayerSnapshot
             {
                 PlayerName = playerBasicInfo.PlayerName,
-                ProfileId = playerBasicInfo.ProfileId,
+                PlayerSnapshotId = playerBasicInfo.ProfileId,
                 LastSnapshot = DateTime.UtcNow,
-                PlayerBasicInfo = playerBasicInfo,
-                CuratedPlayerStats = playerStatsAllMetaPeriodsCurated
+                Profile = playerBasicInfo,
+                CuratedStats = playerStatsAllMetaPeriodsCurated
             };
 
             return playerInfoSnapshot;
         }
 
 
-        private void AddIdsToQueFromRecentMatch(PlayerInfoSnapshot playerInfoSnapshots)
+        private void AddIdsToQueFromRecentMatch(PlayerSnapshot playerInfoSnapshots)
         {
 
-            if (playerInfoSnapshots.CuratedPlayerStats == null)
+            if (playerInfoSnapshots.CuratedStats == null)
             {
                 return;
             }
 
 
-            if (playerInfoSnapshots.CuratedPlayerStats.All.Vanguard is not null)
+            if (playerInfoSnapshots.CuratedStats.All.Vanguard is not null)
             {
                 //Vanguard
-                foreach (var recentMatch in playerInfoSnapshots.CuratedPlayerStats.All.Vanguard.outcomes_by_opponent)
+                foreach (var recentMatch in playerInfoSnapshots.CuratedStats.All.Vanguard.outcomes_by_opponent)
                 { OnlyAddToQueueIfUnique(recentMatch.profile_id); }
             }
 
-            if (playerInfoSnapshots.CuratedPlayerStats.All.Infernals is not null)
+            if (playerInfoSnapshots.CuratedStats.All.Infernals is not null)
             {
                 //Infernals
-                foreach (var recentMatch in playerInfoSnapshots.CuratedPlayerStats.All.Infernals.outcomes_by_opponent)
+                foreach (var recentMatch in playerInfoSnapshots.CuratedStats.All.Infernals.outcomes_by_opponent)
                 { OnlyAddToQueueIfUnique(recentMatch.profile_id); }
             }
 
-            if (playerInfoSnapshots.CuratedPlayerStats.All.Celestials is not null)
+            if (playerInfoSnapshots.CuratedStats.All.Celestials is not null)
             {
                 //Celestials
-                foreach (var recentMatch in playerInfoSnapshots.CuratedPlayerStats.All.Celestials.outcomes_by_opponent)
+                foreach (var recentMatch in playerInfoSnapshots.CuratedStats.All.Celestials.outcomes_by_opponent)
                 { OnlyAddToQueueIfUnique(recentMatch.profile_id); }
 
             }

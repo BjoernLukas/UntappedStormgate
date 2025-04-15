@@ -21,8 +21,8 @@ namespace UntappedAPI
             builder.Services.AddScoped<UntappedApiService>();
             builder.Services.AddScoped<PlayerDiscoveryService>();
 
-            // Register the TemplateDbContext with dependency injection  
-            builder.Services.AddDbContext<TemplateDbContext>(options =>
+            // Register the DbContext with dependency injection  
+            builder.Services.AddDbContext<UntappedDbContext>(options =>
             {
                 options
                 .UseSqlServer(builder.Configuration["ConnectionStrings:BLKDbContextConnection"]);

@@ -68,7 +68,7 @@ public class UntappedApiController : ControllerBase
         {
             return NotFound($"Player with name {profileId} not found.");
         }       
-        var playerStatsAllMetaPeriodsCurated = await response.Content.ReadFromJsonAsync<CuratedPlayerStats>();
+        var playerStatsAllMetaPeriodsCurated = await response.Content.ReadFromJsonAsync<CuratedStats>();
 
         return Ok(playerStatsAllMetaPeriodsCurated);
     }

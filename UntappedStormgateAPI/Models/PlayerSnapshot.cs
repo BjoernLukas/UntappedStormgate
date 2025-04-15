@@ -6,17 +6,17 @@ namespace UntappedAPI.Models
 {
 
     [DebuggerDisplay("Id {ProfileId}, Name {PlayerName}")]
-    public class PlayerInfoSnapshot
+    public class PlayerSnapshot
     {
 
-        //TODO: ProfileId and PlayerName is dublicate in BasicInfo
-        public required string ProfileId { get; set; }
+        //Remark PlayerSnapshotId and PlayerName is duplicated in Profile
+        public required string PlayerSnapshotId { get; set; }
         public required string PlayerName { get; set; }
         public required DateTime LastSnapshot { get; set; }
 
         //From DTOs
-        public required BasicInfo PlayerBasicInfo { get; set; }
-        public CuratedPlayerStats? CuratedPlayerStats { get; set; }
+        public required Profile Profile { get; set; }
+        public CuratedStats? CuratedStats { get; set; }
 
 
 
