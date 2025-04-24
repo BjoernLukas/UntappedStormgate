@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
-using UntappedAPI.DataUtility;
-using UntappedAPI.Models;
-using UntappedAPI.Models.Untapped;
 using UntappedAPI.Service;
 
 namespace UntappedAPI.Controllers;

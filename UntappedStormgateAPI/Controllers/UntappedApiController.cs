@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using UntappedAPI.DataUtility;
-using UntappedAPI.Models.Untapped;
-using UntappedAPI.Models.Untapped.PlayerStats;
+using UntappedAPI.DTOs;
+using UntappedAPI.DTOs.PlayerStatsCuratedStatsDto;
 using UntappedAPI.Service;
 
 namespace UntappedAPI.Controllers;
@@ -11,11 +9,11 @@ namespace UntappedAPI.Controllers;
 [Route("api/[controller]")]
 public class UntappedApiController : ControllerBase
 {
-    private readonly UntappedApiService _dataCollectorService;
+    private readonly UntappedApiService _untappedApiService;
 
     public UntappedApiController(UntappedApiService dataCollectorService)
     {
-        _dataCollectorService = dataCollectorService;
+        _untappedApiService = dataCollectorService;
     }
 
 
@@ -26,10 +24,11 @@ public class UntappedApiController : ControllerBase
     /// </summary>
     /// <param name="displayName"></param>
     /// <returns></returns>
-    [HttpGet("GetPlayerBasicInfoByDisplayName")]
+    [Obsolete]
+    [HttpGet("GetPlayerBasicInfoByDisplayName")]    
     public async Task<IActionResult> GetPlayerBasicInfoByDisplayName(string displayName = "ByteBender")
     {
-        var result = await _dataCollectorService.GetPlayerBasicInfoByDisplayName(displayName);
+        var result = await _untappedApiService.GetPlayerBasicInfoByDisplayName(displayName);
 
         return Ok(result);
     }
@@ -44,20 +43,23 @@ public class UntappedApiController : ControllerBase
     public async Task<IActionResult> GetPlayerBasicInfoById(string profileId)
     {
       
-        var result = await _dataCollectorService.GetPlayerBasicInfoById(profileId);
+        var result = await _untappedApiService.GetPlayerBasicInfoById(profileId);
 
         return Ok(result);
     }
 
     /// <summary>
     /// Get player stats by profileId, default is "ranked_1v1" and "current" season
+    /// Default profileId: ByteBender's id VF92gcD
+    /// Default matchMode: ranked_1v1
+    /// Try season: 13 (0.4)
     /// </summary>
     /// <param name="profileId"></param>
     /// <param name="matchMode"></param>
     /// <param name="season"></param>
     /// <returns></returns>
     [HttpGet("PlayerStats")]
-    public async Task<IActionResult> GetPlayerStats(string profileId, string matchMode = "ranked_1v1", string season = "current")
+    public async Task<IActionResult> GetPlayerStats(string profileId = "VF92gcD", string matchMode = "ranked_1v1", string season = "current")
     {
         var url = $"https://api.stormgate.untapped.gg/api/v2/matches/players/{profileId}/stats/{matchMode}?season={season}";
 
@@ -67,10 +69,14 @@ public class UntappedApiController : ControllerBase
         if (response.IsSuccessStatusCode is false)
         {
             return NotFound($"Player with name {profileId} not found.");
-        }       
-        var playerStatsAllMetaPeriodsCurated = await response.Content.ReadFromJsonAsync<CuratedStats>();
+        }
 
-        return Ok(playerStatsAllMetaPeriodsCurated);
+
+        var raw = await response.Content.ReadAsStringAsync();
+
+        var PlayerStatsCuratedStatsDto = await response.Content.ReadFromJsonAsync<PlayerStatsCuratedStatsDto>();
+
+        return Ok(PlayerStatsCuratedStatsDto);
     }
     [HttpGet("MetaPeriods")]
     public async Task<IActionResult> GetMetaPeriods()
@@ -87,7 +93,7 @@ public class UntappedApiController : ControllerBase
 
         var metaPeriodsRAW = await response.Content.ReadAsStringAsync();
 
-        var metaPeriods = await response.Content.ReadFromJsonAsync<List<MetaPeriod>>();
+        var metaPeriods = await response.Content.ReadFromJsonAsync<List<MetaPeriodDto>>();
 
 
         return Ok(metaPeriods);

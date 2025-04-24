@@ -1,7 +1,8 @@
-﻿namespace UntappedAPI.Models.Untapped
+﻿namespace UntappedAPI.DTOs
 {
-    public class MetaPeriod
+    public class MetaPeriodDto
     {
+
         public int Id { get; set; }
         public string Description { get; set; }
         public string MatchMode { get; set; }

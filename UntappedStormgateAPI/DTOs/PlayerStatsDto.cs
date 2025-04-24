@@ -1,13 +1,14 @@
-﻿namespace UntappedAPI.Models.RawPlayerStats
+﻿namespace UntappedAPI.DTOs.PlayerStatsDto
 {
 
-    public class RawPlayerStats
+
+    public class PlayerStatsDto
     {
-        public _12 _12 { get; set; }
+        public _13 _13 { get; set; }
         public All all { get; set; }
     }
 
-    public class _12
+    public class _13
     {
         public Vanguard vanguard { get; set; }
     }
@@ -16,7 +17,7 @@
     {
         public int[] recent_mmr_history { get; set; }
         public Outcomes_By_Duration outcomes_by_duration { get; set; }
-        public Vanguard_Outcomes_By_Opponent[] outcomes_by_opponent { get; set; }
+        public Outcomes_By_Opponent[] outcomes_by_opponent { get; set; }
         public Outcomes_By_Opponent_Race outcomes_by_opponent_race { get; set; }
         public Outcomes_By_Map outcomes_by_map { get; set; }
         public Summary summary { get; set; }
@@ -24,16 +25,8 @@
 
     public class Outcomes_By_Duration
     {
-        public Celestial[] celestials { get; set; }
         public Vanguard1[] vanguard { get; set; }
-    }
-
-    public class Celestial
-    {
-        public int minute { get; set; }
-        public int wins { get; set; }
-        public int losses { get; set; }
-        public int ties { get; set; }
+        public Infernal[] infernals { get; set; }
     }
 
     public class Vanguard1
@@ -44,17 +37,18 @@
         public int ties { get; set; }
     }
 
-    public class Outcomes_By_Opponent_Race
+    public class Infernal
     {
-        public Celestials celestials { get; set; }
-        public Vanguard2 vanguard { get; set; }
-    }
-
-    public class Celestials
-    {
+        public int minute { get; set; }
         public int wins { get; set; }
         public int losses { get; set; }
         public int ties { get; set; }
+    }
+
+    public class Outcomes_By_Opponent_Race
+    {
+        public Vanguard2 vanguard { get; set; }
+        public Infernals infernals { get; set; }
     }
 
     public class Vanguard2
@@ -64,10 +58,65 @@
         public int ties { get; set; }
     }
 
+    public class Infernals
+    {
+        public int wins { get; set; }
+        public int losses { get; set; }
+        public int ties { get; set; }
+    }
+
     public class Outcomes_By_Map
     {
-        public Brokencrown BrokenCrown { get; set; }
+        public Secludedgrovev2 SecludedGroveV2 { get; set; }
+        public Losthope LostHope { get; set; }
         public Furiousresolve FuriousResolve { get; set; }
+        public Ruination Ruination { get; set; }
+        public Boneyard Boneyard { get; set; }
+        public Isleofdread IsleOfDread { get; set; }
+        public Brokencrown BrokenCrown { get; set; }
+        public Titanscausewayv2 TitansCausewayV2 { get; set; }
+    }
+
+    public class Secludedgrovev2
+    {
+        public int wins { get; set; }
+        public int losses { get; set; }
+        public int ties { get; set; }
+    }
+
+    public class Losthope
+    {
+        public int wins { get; set; }
+        public int losses { get; set; }
+        public int ties { get; set; }
+    }
+
+    public class Furiousresolve
+    {
+        public int wins { get; set; }
+        public int losses { get; set; }
+        public int ties { get; set; }
+    }
+
+    public class Ruination
+    {
+        public int wins { get; set; }
+        public int losses { get; set; }
+        public int ties { get; set; }
+    }
+
+    public class Boneyard
+    {
+        public int wins { get; set; }
+        public int losses { get; set; }
+        public int ties { get; set; }
+    }
+
+    public class Isleofdread
+    {
+        public int wins { get; set; }
+        public int losses { get; set; }
+        public int ties { get; set; }
     }
 
     public class Brokencrown
@@ -77,7 +126,7 @@
         public int ties { get; set; }
     }
 
-    public class Furiousresolve
+    public class Titanscausewayv2
     {
         public int wins { get; set; }
         public int losses { get; set; }
@@ -95,7 +144,7 @@
         public int mmr { get; set; }
     }
 
-    public class Vanguard_Outcomes_By_Opponent
+    public class Outcomes_By_Opponent
     {
         public string player_name { get; set; }
         public string profile_id { get; set; }
@@ -122,16 +171,8 @@
 
     public class Outcomes_By_Duration1
     {
-        public Celestial1[] celestials { get; set; }
         public Vanguard4[] vanguard { get; set; }
-    }
-
-    public class Celestial1
-    {
-        public int minute { get; set; }
-        public int wins { get; set; }
-        public int losses { get; set; }
-        public int ties { get; set; }
+        public Infernal1[] infernals { get; set; }
     }
 
     public class Vanguard4
@@ -142,17 +183,18 @@
         public int ties { get; set; }
     }
 
-    public class Outcomes_By_Opponent_Race1
+    public class Infernal1
     {
-        public Celestials1 celestials { get; set; }
-        public Vanguard5 vanguard { get; set; }
-    }
-
-    public class Celestials1
-    {
+        public int minute { get; set; }
         public int wins { get; set; }
         public int losses { get; set; }
         public int ties { get; set; }
+    }
+
+    public class Outcomes_By_Opponent_Race1
+    {
+        public Vanguard5 vanguard { get; set; }
+        public Infernals1 infernals { get; set; }
     }
 
     public class Vanguard5
@@ -162,10 +204,65 @@
         public int ties { get; set; }
     }
 
+    public class Infernals1
+    {
+        public int wins { get; set; }
+        public int losses { get; set; }
+        public int ties { get; set; }
+    }
+
     public class Outcomes_By_Map1
     {
-        public Brokencrown1 BrokenCrown { get; set; }
+        public Secludedgrovev21 SecludedGroveV2 { get; set; }
+        public Losthope1 LostHope { get; set; }
         public Furiousresolve1 FuriousResolve { get; set; }
+        public Ruination1 Ruination { get; set; }
+        public Boneyard1 Boneyard { get; set; }
+        public Isleofdread1 IsleOfDread { get; set; }
+        public Brokencrown1 BrokenCrown { get; set; }
+        public Titanscausewayv21 TitansCausewayV2 { get; set; }
+    }
+
+    public class Secludedgrovev21
+    {
+        public int wins { get; set; }
+        public int losses { get; set; }
+        public int ties { get; set; }
+    }
+
+    public class Losthope1
+    {
+        public int wins { get; set; }
+        public int losses { get; set; }
+        public int ties { get; set; }
+    }
+
+    public class Furiousresolve1
+    {
+        public int wins { get; set; }
+        public int losses { get; set; }
+        public int ties { get; set; }
+    }
+
+    public class Ruination1
+    {
+        public int wins { get; set; }
+        public int losses { get; set; }
+        public int ties { get; set; }
+    }
+
+    public class Boneyard1
+    {
+        public int wins { get; set; }
+        public int losses { get; set; }
+        public int ties { get; set; }
+    }
+
+    public class Isleofdread1
+    {
+        public int wins { get; set; }
+        public int losses { get; set; }
+        public int ties { get; set; }
     }
 
     public class Brokencrown1
@@ -175,7 +272,7 @@
         public int ties { get; set; }
     }
 
-    public class Furiousresolve1
+    public class Titanscausewayv21
     {
         public int wins { get; set; }
         public int losses { get; set; }
@@ -202,7 +299,6 @@
         public int losses { get; set; }
         public int ties { get; set; }
     }
-
 
 
 }

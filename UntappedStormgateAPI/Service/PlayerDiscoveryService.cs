@@ -1,6 +1,5 @@
-﻿using UntappedAPI.DataUtility;
+﻿using UntappedAPI.DatabaseContext;
 using UntappedAPI.Models;
-using UntappedAPI.Models.Untapped.PlayerStats;
 
 namespace UntappedAPI.Service
 {
@@ -71,7 +70,7 @@ namespace UntappedAPI.Service
 
             var PlayerInfoSnapshot = await CreatePlayerInfoSnapshot(playerId);
             _playerInfoSnapshots.Add(PlayerInfoSnapshot);
-            AddIdsToQueFromRecentMatch(PlayerInfoSnapshot);
+            //AddIdsToQueFromRecentMatch(PlayerInfoSnapshot);
             //TODO: Add to DB
 
         }
@@ -81,56 +80,58 @@ namespace UntappedAPI.Service
             var playerBasicInfo = await _untappedApiService.GetPlayerBasicInfoById(profile_id);
             var playerStatsAllMetaPeriodsCurated = await _untappedApiService.GetPlayerStats(profile_id, "ranked_1v1", "current");
 
-            var playerInfoSnapshot = new PlayerSnapshot
-            {
-                PlayerName = playerBasicInfo.PlayerName,
-                PlayerSnapshotId = playerBasicInfo.ProfileId,
-                LastSnapshot = DateTime.UtcNow,
-                Profile = playerBasicInfo,
-                CuratedStats = playerStatsAllMetaPeriodsCurated
-            };
+            //var playerInfoSnapshot = new PlayerSnapshot
+            //{
+            //    PlayerName = playerBasicInfo.PlayerName,
+            //    PlayerSnapshotId = playerBasicInfo.ProfileId,
+            //    LastSnapshot = DateTime.UtcNow,
+            //    Profile = playerBasicInfo,
+            //    CuratedStats = playerStatsAllMetaPeriodsCurated
+            //};
 
-            return playerInfoSnapshot;
+            //return playerInfoSnapshot;
+
+            throw new NotImplementedException("PlayerSnapshot creation is not implemented yet.");
         }
 
 
-        private void AddIdsToQueFromRecentMatch(PlayerSnapshot playerInfoSnapshots)
-        {
+        //private void AddIdsToQueFromRecentMatch(PlayerSnapshot playerInfoSnapshots)
+        //{
 
-            if (playerInfoSnapshots.CuratedStats == null)
-            {
-                return;
-            }
-
-
-            if (playerInfoSnapshots.CuratedStats.All.Vanguard is not null)
-            {
-                //Vanguard
-                foreach (var recentMatch in playerInfoSnapshots.CuratedStats.All.Vanguard.outcomes_by_opponent)
-                { OnlyAddToQueueIfUnique(recentMatch.profile_id); }
-            }
-
-            if (playerInfoSnapshots.CuratedStats.All.Infernals is not null)
-            {
-                //Infernals
-                foreach (var recentMatch in playerInfoSnapshots.CuratedStats.All.Infernals.outcomes_by_opponent)
-                { OnlyAddToQueueIfUnique(recentMatch.profile_id); }
-            }
-
-            if (playerInfoSnapshots.CuratedStats.All.Celestials is not null)
-            {
-                //Celestials
-                foreach (var recentMatch in playerInfoSnapshots.CuratedStats.All.Celestials.outcomes_by_opponent)
-                { OnlyAddToQueueIfUnique(recentMatch.profile_id); }
-
-            }
+        //    if (playerInfoSnapshots.CuratedStats == null)
+        //    {
+        //        return;
+        //    }
 
 
+        //    if (playerInfoSnapshots.CuratedStats.All.Vanguard is not null)
+        //    {
+        //        //Vanguard
+        //        foreach (var recentMatch in playerInfoSnapshots.CuratedStats.All.Vanguard.outcomes_by_opponent)
+        //        { OnlyAddToQueueIfUnique(recentMatch.profile_id); }
+        //    }
+
+        //    if (playerInfoSnapshots.CuratedStats.All.Infernals is not null)
+        //    {
+        //        //Infernals
+        //        foreach (var recentMatch in playerInfoSnapshots.CuratedStats.All.Infernals.outcomes_by_opponent)
+        //        { OnlyAddToQueueIfUnique(recentMatch.profile_id); }
+        //    }
+
+        //    if (playerInfoSnapshots.CuratedStats.All.Celestials is not null)
+        //    {
+        //        //Celestials
+        //        foreach (var recentMatch in playerInfoSnapshots.CuratedStats.All.Celestials.outcomes_by_opponent)
+        //        { OnlyAddToQueueIfUnique(recentMatch.profile_id); }
+
+        //    }
 
 
 
 
-        }
+
+
+        //}
 
         /// <summary>
         /// Check if the player id is already in the queue. If not, add it to the queue.

@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using UntappedAPI.DataUtility;
+using UntappedAPI.DatabaseContext;
 using UntappedAPI.Service;
 
 namespace UntappedAPI

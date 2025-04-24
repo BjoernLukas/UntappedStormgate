@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
-using UntappedAPI.Models.Untapped;
-using UntappedAPI.Models.Untapped.PlayerStats;
+using UntappedAPI.DTOs;
+
 
 namespace UntappedAPI.Models
 {
@@ -15,8 +15,8 @@ namespace UntappedAPI.Models
         public required DateTime LastSnapshot { get; set; }
 
         //From DTOs
-        public required Profile Profile { get; set; }
-        public CuratedStats? CuratedStats { get; set; }
+        //public required Profile Profile { get; set; }
+        //public PlayerStatsCuratedStatsDto? CuratedStats { get; set; }
 
 
 

@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
 using UntappedAPI.Models;
-using UntappedAPI.Models.Untapped;
-using UntappedAPI.Models.Untapped.PlayerStats;
 
-namespace UntappedAPI.DataUtility;
+
+namespace UntappedAPI.DatabaseContext;
 
 
 public class UntappedDbContext : DbContext
