@@ -39,11 +39,11 @@ public class UntappedApiController : ControllerBase
     /// </summary>
     /// <param name="profileId"></param>
     /// <returns></returns>
-    [HttpGet("GetPlayerBasicInfoById")]
+    [HttpGet("GetPlayerLookUpDto")]
     public async Task<IActionResult> GetPlayerBasicInfoById(string profileId)
     {
       
-        var result = await _untappedApiService.GetPlayerBasicInfoById(profileId);
+        var result = await _untappedApiService.GetPlayerLookUpDto(profileId);
 
         return Ok(result);
     }

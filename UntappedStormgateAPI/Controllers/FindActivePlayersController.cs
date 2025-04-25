@@ -20,10 +20,10 @@ public class FindActivePlayersController : ControllerBase
     /// Start on Player ByteBender work from there.
     /// </summary>
     /// <returns></returns>
-    [HttpGet("StartOnByteBender")]
-    public async Task<IActionResult> StartOnByteBender()
+    [HttpGet("NOTDONEStartWorkingOnQue")]
+    public async Task<IActionResult> NOTDONEStartWorkingOnQue()
     {
-        var result = await _playerDiscoveryService.StartDiscoveryOnSpecificPlayer("VF92gcD"); // ByteBender
+        var result = await _playerDiscoveryService.StartDiscoveryOnSpecificPlayerId("VF92gcD"); // ByteBender
 
         return Ok(result);
     }
@@ -32,11 +32,11 @@ public class FindActivePlayersController : ControllerBase
     /// Test the DbContext with a player.
     /// </summary>
     /// <returns></returns>
-    [HttpGet("TestDbContextWithPlayer")]
-    public async Task<IActionResult> TestDbContextWithPlayer()
+    [HttpGet("SaveSnapshotOnlyOnePlayer")]
+    public IActionResult SaveSnapshotOnlyOnePlayer()
     {
         // Call the method to test the DbContext with a player
-        var result =  _playerDiscoveryService.TestDbContextWithPlayer();
+        var result =  _playerDiscoveryService.SaveSnapshotOnlyOnePlayer("VF92gcD"); // ByteBender
 
         return Ok(result);
     }

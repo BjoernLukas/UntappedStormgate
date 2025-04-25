@@ -32,8 +32,7 @@
     }
 
     public class Outcomes_By_Opponent
-    {
-       
+    {       
         public string player_name { get; set; }
         public string profile_id { get; set; }
         public string race { get; set; }

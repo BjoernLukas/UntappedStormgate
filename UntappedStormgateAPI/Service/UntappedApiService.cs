@@ -27,7 +27,7 @@ namespace UntappedAPI.Service
             return playerInfo ?? throw new();
         }
 
-        public async Task<PlayerLookUpDto> GetPlayerBasicInfoById(string id)
+        public async Task<PlayerLookUpDto> GetPlayerLookUpDto(string id)
         {
             var url = $"https://api.stormgate.untapped.gg/api/v1/players/{id}";
 
