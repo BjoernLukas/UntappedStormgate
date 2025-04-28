@@ -30,7 +30,7 @@
         public int points { get; set; }
         public int season { get; set; }
         public int tier { get; set; }
-        public int ties { get; set; }
+        //public int ties { get; set; }
         public int wins { get; set; }
     }
 
@@ -42,7 +42,7 @@
         public int points { get; set; }
         public int season { get; set; }
         public int tier { get; set; }
-        public object ties { get; set; }
+        //public object ties { get; set; }
         public int wins { get; set; }
     }
 
@@ -54,7 +54,7 @@
         public int points { get; set; }
         public int season { get; set; }
         public int tier { get; set; }
-        public object ties { get; set; }
+        //public object ties { get; set; }
         public int wins { get; set; }
     }
 
