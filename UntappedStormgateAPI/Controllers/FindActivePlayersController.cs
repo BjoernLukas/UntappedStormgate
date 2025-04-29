@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Text.Json;
+using UntappedAPI.DatabaseContext;
+using UntappedAPI.Models;
 using UntappedAPI.Service;
 
 namespace UntappedAPI.Controllers;
@@ -21,10 +23,10 @@ public class FindActivePlayersController : ControllerBase
     /// Start on Player ByteBender work from there.
     /// </summary>
     /// <returns></returns>
-    [HttpGet("StartDiscoveryOnSpecificPlayerId")]
-    public async Task<IActionResult> StartDiscoveryOnSpecificPlayerId(string playerId)
+    [HttpGet("StartQueueOnSpecificPlayer")]
+    public async Task<IActionResult> StartDiscoveryOnSpecificPlayerId(string playerId = "VF92gcD") // ByteBender
     {
-        var result = await _playerDiscoveryService.StartDiscoveryOnSpecificPlayerId(playerId); 
+        var result = await _playerDiscoveryService.StartQueueOnSpecificPlayer(playerId); 
 
         return Ok(result);
     }
@@ -37,18 +39,35 @@ public class FindActivePlayersController : ControllerBase
     [HttpGet("SaveSnapshotOnlyOnePlayer")]
     public IActionResult SaveSnapshotOnlyOnePlayer()
     {
-        // Call the method to test the DbContext with a player
-        var result =  _playerDiscoveryService.SaveSnapshotOnlyOnePlayer("VF92gcD"); // ByteBender
+        // Call the method to test the DbContext with a player       
 
-        return Ok(result);
+        //var playerSnapshot = CreateMediumSnapshotByPlayerLookUpDto(profileId).Result;
+
+        //_untappedDbContext.Set<PlayerSnapshot>().Update(playerSnapshot);
+        //_untappedDbContext.SaveChanges();
+
+
+        return Ok();
     }
 
 
-    [HttpGet("TraceTest")]
-    public IActionResult TraceTest()
+    [HttpGet("ConsoleTest")]
+    public IActionResult LogConsoleTest()
     {
 
         Trace.TraceInformation("This is an informational message.");
+
+        //Console.BackgroundColor = ConsoleColor.Black;
+        //Console.WriteLine("This is a manual console write.");
+
+
+
+
+        Console.ForegroundColor = ConsoleColor.DarkGreen;
+        Console.WriteLine("Test msg.");
+
+
+        
 
 
         return Ok();

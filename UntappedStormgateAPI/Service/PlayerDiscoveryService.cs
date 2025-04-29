@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using UntappedAPI.DatabaseContext;
-using UntappedAPI.DTOs.PlayerLookUpDto;
 using UntappedAPI.Models;
 
 namespace UntappedAPI.Service
@@ -20,76 +19,74 @@ namespace UntappedAPI.Service
             _untappedDbContext = untappedDbContext;
         }
 
-        public string SaveSnapshotOnlyOnePlayer(string profileId)
+
+        public async Task<string> StartQueueOnSpecificPlayer(string profileId)
         {
-
-            var playerSnapshot = CreateMediumSnapshotByPlayerLookUpDto(profileId).Result;
-
-            _untappedDbContext.Set<PlayerSnapshot>().Update(playerSnapshot);
-            _untappedDbContext.SaveChanges();
-
-
-            return $"PlayersSnapshot saved {profileId}";
-        }
-
-
-
-        /// <summary>
-        /// Start on Player (default ByteBender) work from there.
-        /// </summary>
-        /// <param name="profileId"></param>
-        /// <returns></returns>
-        public async Task<string> StartDiscoveryOnSpecificPlayerId(string profileId)
-        {
-
-
             //STEP 1: Seed First Player   
             _playerIdsQueue.Enqueue(profileId);
-            
 
             //STEP 2: work on que while also adding new players to the que
             while (_playerIdsQueue.Count != 0)
             {
-                await WorkOnSnapshotQueue();
+                await StartWorkingOnQueue();
             }
 
-
-            return $"StartDiscoveryOnSpecificPlayerId done";
+            return $"StartWorkingOnQueue done, no more in Queue";
         }
 
 
-        public async Task WorkOnSnapshotQueue()
+        public async Task StartWorkingOnQueue()
         {
-            Trace.TraceInformation($"_playerIdsQueue = {_playerIdsQueue.Count}");
 
-            string playerId = _playerIdsQueue.Dequeue();
+            //TODO: Make this a ConsoleLogger wrapper
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine($"Queue status: Id's in Queue = {_playerIdsQueue.Count} -- Players saved this session = {_amountOfNewPlayersFound}");
+            Console.ForegroundColor = ConsoleColor.Black;
 
-            Trace.TraceInformation($"Starting on new player {playerId}");
 
-            var isPlayerIdWorthLookingUp = IsWorthDoingLookUpSearch(playerId);
+            string currentPlayerId = _playerIdsQueue.Dequeue();
+
+
+            //TODO: improve this so there is not 2x db calls
+            var isPlayerIdWorthLookingUp = IsWorthDoingLookUpSearch(currentPlayerId);
 
             if (isPlayerIdWorthLookingUp is false)
             {
-                Trace.TraceInformation($"Player {playerId} not worth looking up ");
+
+                Console.WriteLine($"Player {currentPlayerId} not worth looking up ");
                 return; //Do nothing  
             }
 
-            //BIG TODO needs to hande updateing Light to medium.
-
 
             //**Medium Snapshot - All players at this point are ether Light unknow and worth saving to db
-            var mediumPlayerSnapshot = await CreateMediumSnapshotByPlayerLookUpDto(playerId);
-            _untappedDbContext.Add(mediumPlayerSnapshot);
-           await _untappedDbContext.SaveChangesAsync();
-
-            Trace.TraceInformation($"mediumPlayerSnapshot was saved: {mediumPlayerSnapshot.ProfileId},{mediumPlayerSnapshot.PlayerName} ");
+            var PlayerSnapshotExsists = _untappedDbContext.Set<PlayerSnapshot>().Any(snapshot => snapshot.ProfileId == currentPlayerId);
 
 
-            //**Light Snapshot
 
-            var allOpponentSet_Id_Name = await GetOpponentIdsFromMatchHistory(playerId);
+            if (PlayerSnapshotExsists is false)
+            {
+                await CreateAndSaveMediumSnapshot(currentPlayerId);
 
-            Trace.TraceInformation($"{mediumPlayerSnapshot.PlayerName} has meet {allOpponentSet_Id_Name.Count} Opponents");
+            }
+            else
+            {
+                await UpdateMediumSnapshot(currentPlayerId);
+
+            }
+
+
+            await CreateAndSaveLightSnapshots(currentPlayerId);
+
+            return;
+        }
+
+        private async Task CreateAndSaveLightSnapshots(string currentPlayerId)
+        {
+            var allOpponentSet_Id_Name = await GetOpponentIdsFromMatchHistory(currentPlayerId);
+
+
+
+            Trace.TraceInformation($"{currentPlayerId} has meet {allOpponentSet_Id_Name.Count} Opponents");
 
             var lightSnapshotsToBeProcessed = new List<PlayerSnapshot>();
 
@@ -113,8 +110,30 @@ namespace UntappedAPI.Service
 
             foreach (var id in idsToBeAddedToQue)
             { _playerIdsQueue.Enqueue(id); }
+        }
 
-            return;
+        private async Task UpdateMediumSnapshot(string currentPlayerId)
+        {
+            var existingPlayerSnapshot = _untappedDbContext.Set<PlayerSnapshot>().Where(x => x.ProfileId == currentPlayerId).First();
+
+            var playerLookUpDto = await _untappedApiService.GetPlayerLookUpDto(currentPlayerId);
+
+            existingPlayerSnapshot.MatchHistoryVisibility = playerLookUpDto?.matchHistoryVisibility?.RANKED_1V1;
+            existingPlayerSnapshot.ReplayVisibility = playerLookUpDto?.replayVisibility?.RANKED_1V1;
+            existingPlayerSnapshot.LastSnapshot = DateTime.UtcNow;
+            existingPlayerSnapshot.InfoRichness = InfoRichness.Medium_Lookup;
+
+            await _untappedDbContext.SaveChangesAsync();
+        }
+
+        private async Task CreateAndSaveMediumSnapshot(string currentPlayerId)
+        {
+            var mediumPlayerSnapshot = await CreateMediumSnapshotByPlayerLookUpDto(currentPlayerId);
+            _untappedDbContext.Add(mediumPlayerSnapshot);
+            await _untappedDbContext.SaveChangesAsync();
+
+            _amountOfNewPlayersFound++;
+            Console.WriteLine($"mediumPlayerSnapshot was saved: {mediumPlayerSnapshot.ProfileId} -- {mediumPlayerSnapshot.PlayerName} ");
         }
 
         /// <summary>
