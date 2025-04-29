@@ -16,6 +16,8 @@ namespace UntappedAPI
             builder.Logging.AddDebug(); // Sends to Output -> Debug window
             builder.Logging.AddConsole();
 
+            builder.Logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.None);
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -24,6 +26,8 @@ namespace UntappedAPI
             // custom Services
             builder.Services.AddScoped<UntappedApiService>();
             builder.Services.AddScoped<PlayerDiscoveryService>();
+            builder.Services.AddSingleton<TotalProgressService>();
+
 
             // Register the DbContext with dependency injection  
             builder.Services.AddDbContext<UntappedDbContext>(options =>

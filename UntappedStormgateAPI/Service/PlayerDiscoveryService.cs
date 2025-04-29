@@ -9,15 +9,17 @@ namespace UntappedAPI.Service
     {
         private readonly UntappedApiService _untappedApiService;
         private readonly UntappedDbContext _untappedDbContext;
+        private readonly TotalProgressService _totalProgressService;
         private Queue<string> _playerIdsQueue;
         private int _amountOfNewPlayersFound = 0;
 
 
-        public PlayerDiscoveryService(UntappedApiService dataCollectorService, UntappedDbContext untappedDbContext)
+        public PlayerDiscoveryService(UntappedApiService dataCollectorService, UntappedDbContext untappedDbContext, TotalProgressService totalProgressService)
         {
             _untappedApiService = dataCollectorService;
             _playerIdsQueue = new Queue<string>();
             _untappedDbContext = untappedDbContext;
+            _totalProgressService = totalProgressService;
         }
 
 
@@ -29,7 +31,9 @@ namespace UntappedAPI.Service
             //STEP 2: work on que while also adding new players to the que
             while (_playerIdsQueue.Count != 0)
             {
+                Console.WriteLine($"Total Players found so far {_totalProgressService._newPlayersFound}!");
                 await StartWorkingOnQueue();
+                
             }
 
             return $"StartWorkingOnQueue done, no more in Queue";
@@ -37,7 +41,7 @@ namespace UntappedAPI.Service
 
 
         public async Task StartWorkingOnQueue()
-        {
+        {            
 
             //TODO: Make this a ConsoleLogger wrapper
             Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -55,7 +59,7 @@ namespace UntappedAPI.Service
             {
 
                 Console.WriteLine($"Player {currentPlayerId} not worth looking up ");
-                return; //Do nothing  
+                return ; //Do nothing  
             }
 
 
@@ -79,7 +83,10 @@ namespace UntappedAPI.Service
 
             await AddPlayerIdsToQue();
 
-            return;
+            _totalProgressService._newPlayersFound = _amountOfNewPlayersFound;
+            Console.WriteLine($"Total Players found so far {_totalProgressService._newPlayersFound}!");
+
+            return ;
         }
 
         /// <summary>
@@ -88,7 +95,7 @@ namespace UntappedAPI.Service
         /// <returns></returns>
         private async Task AddPlayerIdsToQue()
         {
-            var lightRichnessPlayerIds =  _untappedDbContext.Set<PlayerSnapshot>()
+            var lightRichnessPlayerIds = _untappedDbContext.Set<PlayerSnapshot>()
                 .Where(snapshot => snapshot.InfoRichness == InfoRichness.Light_NameAndIdKnow)
                 .Select(snapshot => snapshot.ProfileId)
                 .ToList();
@@ -116,6 +123,8 @@ namespace UntappedAPI.Service
             _untappedDbContext.AddRange(notYetKnownPlayerSnapshot);
             await _untappedDbContext.SaveChangesAsync();
 
+
+            _amountOfNewPlayersFound = +notYetKnownPlayerSnapshot.Count;
             Console.WriteLine($"current Player has meet {allOpponentSet_Id_Name.Count} Opponents --  {notYetKnownPlayerSnapshot.Count} was new discoveries");
         }
 
@@ -124,6 +133,9 @@ namespace UntappedAPI.Service
             var existingPlayerSnapshot = _untappedDbContext.Set<PlayerSnapshot>().Where(x => x.ProfileId == currentPlayerId).First();
 
             var playerLookUpDto = await _untappedApiService.GetPlayerLookUpDto(currentPlayerId);
+            if (playerLookUpDto is null)
+            { return; }
+
 
             existingPlayerSnapshot.MatchHistoryVisibility = playerLookUpDto?.matchHistoryVisibility?.RANKED_1V1;
             existingPlayerSnapshot.ReplayVisibility = playerLookUpDto?.replayVisibility?.RANKED_1V1;
@@ -136,6 +148,11 @@ namespace UntappedAPI.Service
         private async Task CreateAndSaveMediumSnapshot(string currentPlayerId)
         {
             var mediumPlayerSnapshot = await CreateMediumSnapshotByPlayerLookUpDto(currentPlayerId);
+            if (mediumPlayerSnapshot is null)
+            {
+                return;
+            }
+
             _untappedDbContext.Add(mediumPlayerSnapshot);
             await _untappedDbContext.SaveChangesAsync();
 
@@ -266,9 +283,12 @@ namespace UntappedAPI.Service
 
 
 
-        private async Task<PlayerSnapshot> CreateMediumSnapshotByPlayerLookUpDto(string profile_id)
+        private async Task<PlayerSnapshot?> CreateMediumSnapshotByPlayerLookUpDto(string profile_id)
         {
             var playerLookUpDto = await _untappedApiService.GetPlayerLookUpDto(profile_id);
+
+            if (playerLookUpDto is null)
+            { return null; }
 
             var playerSnapshot = new PlayerSnapshot
             {
@@ -284,7 +304,7 @@ namespace UntappedAPI.Service
 
             return playerSnapshot;
 
-        }     
+        }
 
 
 

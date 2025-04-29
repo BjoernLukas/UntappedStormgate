@@ -27,43 +27,79 @@ namespace UntappedAPI.Service
             return playerInfo ?? throw new();
         }
 
-        public async Task<PlayerLookUpDto> GetPlayerLookUpDto(string id)
+        public async Task<PlayerLookUpDto?> GetPlayerLookUpDto(string id)
         {
-            var url = $"https://api.stormgate.untapped.gg/api/v1/players/{id}";
-
-            using HttpClient client = new();
-            var response = await client.GetAsync(url);
-
-            if (response.IsSuccessStatusCode is false)
+            try
             {
-                throw new($"Player with id {id} not found.");
+                var url = $"https://api.stormgate.untapped.gg/api/v1/players/{id}";
+
+                using HttpClient client = new();
+                var response = await client.GetAsync(url);
+
+                if (response.IsSuccessStatusCode is false)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Player with id {id} not found");
+                    Console.ForegroundColor = ConsoleColor.Black;
+
+                    return null;
+                }
+
+
+
+                var result = await response.Content.ReadFromJsonAsync<PlayerLookUpDto>();
+
+                return result;
+            }
+            catch
+            {
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Something went wrong with GetPlayerLookUpDto");
+                Console.ForegroundColor = ConsoleColor.Black;
+
+                return null;
+
             }
 
-            var resultRaw = await response.Content.ReadAsStringAsync();
 
-            var result = await response.Content.ReadFromJsonAsync<PlayerLookUpDto>();
-
-            return result ?? throw new();
         }
 
 
 
 
-        public async Task<PlayerStatsCuratedStatsDto> GetPlayerStats(string profileId, string matchMode, string season)
+        public async Task<PlayerStatsCuratedStatsDto?> GetPlayerStats(string profileId, string matchMode, string season)
         {
-            var url = $"https://api.stormgate.untapped.gg/api/v2/matches/players/{profileId}/stats/{matchMode}?season={season}";
-
-            using HttpClient client = new();
-            var response = await client.GetAsync(url);
-
-            if (response.IsSuccessStatusCode is false)
+            try
             {
-                throw new($"Player: {profileId} not found.");
+                var url = $"https://api.stormgate.untapped.gg/api/v2/matches/players/{profileId}/stats/{matchMode}?season={season}";
+
+                using HttpClient client = new();
+                var response = await client.GetAsync(url);
+
+                if (response.IsSuccessStatusCode is false)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Player with id {profileId} not found");
+                    Console.ForegroundColor = ConsoleColor.Black;
+
+                    return null;
+                }
+
+                var playerStatsAllMetaPeriodsCurated = await response.Content.ReadFromJsonAsync<PlayerStatsCuratedStatsDto>();
+
+                return playerStatsAllMetaPeriodsCurated;
             }
+            catch (Exception)
+            {
 
-            var playerStatsAllMetaPeriodsCurated = await response.Content.ReadFromJsonAsync<PlayerStatsCuratedStatsDto>();
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Something went wrong with GetPlayerStats");
+                Console.ForegroundColor = ConsoleColor.Black;
 
-            return playerStatsAllMetaPeriodsCurated ?? throw new($"Player: {profileId} id not have any playerStats");
+                return null;
+
+            }
         }
 
 
