@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using UntappedAPI.DatabaseContext;
 using UntappedAPI.Models;
+using System.Linq;
 
 namespace UntappedAPI.Service
 {
@@ -74,20 +75,32 @@ namespace UntappedAPI.Service
 
             }
 
-
             await CreateAndSaveLightSnapshots(currentPlayerId);
 
+            await AddPlayerIdsToQue();
+
             return;
+        }
+
+        /// <summary>
+        /// Will add new Id if they are not in the que allready
+        /// </summary>
+        /// <returns></returns>
+        private async Task AddPlayerIdsToQue()
+        {
+            var lightRichnessPlayerIds =  _untappedDbContext.Set<PlayerSnapshot>()
+                .Where(snapshot => snapshot.InfoRichness == InfoRichness.Light_NameAndIdKnow)
+                .Select(snapshot => snapshot.ProfileId)
+                .ToList();
+
+
+            foreach (var playerId in lightRichnessPlayerIds.Where(playerId => _playerIdsQueue.Contains(playerId) is false))
+            { _playerIdsQueue.Enqueue(playerId); }
         }
 
         private async Task CreateAndSaveLightSnapshots(string currentPlayerId)
         {
             var allOpponentSet_Id_Name = await GetOpponentIdsFromMatchHistory(currentPlayerId);
-
-
-
-            Trace.TraceInformation($"{currentPlayerId} has meet {allOpponentSet_Id_Name.Count} Opponents");
-
             var lightSnapshotsToBeProcessed = new List<PlayerSnapshot>();
 
             //TOD: improve so we do not create the Player-snapshot before we know it is not in the db
@@ -103,13 +116,7 @@ namespace UntappedAPI.Service
             _untappedDbContext.AddRange(notYetKnownPlayerSnapshot);
             await _untappedDbContext.SaveChangesAsync();
 
-            Trace.TraceInformation($"{notYetKnownPlayerSnapshot.Count} new players found and there light Snapshot have been saved to Db");
-
-            //Because the light snapshot is sill something we can collect a match history on we adds them to the que
-            var idsToBeAddedToQue = notYetKnownPlayerSnapshot.Select(x => x.ProfileId).ToList();
-
-            foreach (var id in idsToBeAddedToQue)
-            { _playerIdsQueue.Enqueue(id); }
+            Console.WriteLine($"current Player has meet {allOpponentSet_Id_Name.Count} Opponents --  {notYetKnownPlayerSnapshot.Count} was new discoveries");
         }
 
         private async Task UpdateMediumSnapshot(string currentPlayerId)
@@ -166,7 +173,7 @@ namespace UntappedAPI.Service
 
             var statsCuratedDto = await _untappedApiService.GetPlayerStats(playerId, "ranked_1v1", "current");
 
-            var allOpponentIdsMeetAsVanguard = statsCuratedDto.All?.Vanguard?.outcomes_by_opponent;
+            var allOpponentIdsMeetAsVanguard = statsCuratedDto?.All?.Vanguard?.outcomes_by_opponent;
             if (allOpponentIdsMeetAsVanguard is not null)
             {
                 foreach (var opponent in allOpponentIdsMeetAsVanguard)
@@ -178,10 +185,10 @@ namespace UntappedAPI.Service
 
                 }
             }
-            var allOpponentIdsMeetAsInfernals = statsCuratedDto.All?.Infernals?.outcomes_by_opponent;
-            if (allOpponentIdsMeetAsVanguard is not null)
+            var allOpponentIdsMeetAsInfernals = statsCuratedDto?.All?.Infernals?.outcomes_by_opponent;
+            if (allOpponentIdsMeetAsInfernals is not null)
             {
-                foreach (var opponent in allOpponentIdsMeetAsVanguard)
+                foreach (var opponent in allOpponentIdsMeetAsInfernals)
                 {
                     if (opponentSet_Id_Name.ContainsKey(opponent.profile_id) is false)
                     {
@@ -191,10 +198,10 @@ namespace UntappedAPI.Service
                 }
             }
 
-            var allOpponentIdsMeetAsCelestials = statsCuratedDto.All?.Celestials?.outcomes_by_opponent;
-            if (allOpponentIdsMeetAsVanguard is not null)
+            var allOpponentIdsMeetAsCelestials = statsCuratedDto?.All?.Celestials?.outcomes_by_opponent;
+            if (allOpponentIdsMeetAsCelestials is not null)
             {
-                foreach (var opponent in allOpponentIdsMeetAsVanguard)
+                foreach (var opponent in allOpponentIdsMeetAsCelestials)
                 {
                     if (opponentSet_Id_Name.ContainsKey(opponent.profile_id) is false)
                     {
@@ -277,10 +284,11 @@ namespace UntappedAPI.Service
 
             return playerSnapshot;
 
-        }
-
+        }     
 
 
 
     }
+
 }
+
