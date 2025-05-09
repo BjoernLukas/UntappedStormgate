@@ -55,16 +55,12 @@ public class FindActivePlayersController : ControllerBase
     public IActionResult LogConsoleTest()
     {
 
-        Trace.TraceInformation("This is an informational message.");
-
-        //Console.BackgroundColor = ConsoleColor.Black;
-        //Console.WriteLine("This is a manual console write.");
-
-
-
-
         Console.ForegroundColor = ConsoleColor.DarkGreen;
-        Console.WriteLine("Test msg.");
+        Console.WriteLine($"DarkGreen Test");
+        Console.ForegroundColor = ConsoleColor.White;
+
+                
+        Console.WriteLine("Test msg no color.");
 
 
         

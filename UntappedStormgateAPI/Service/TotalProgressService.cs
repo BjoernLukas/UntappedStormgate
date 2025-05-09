@@ -2,7 +2,7 @@
 {
     public class TotalProgressService
     {
-        public int _newPlayersFound { get; set; } = 0;
+        public int newPlayersFound { get; set; } = 0;
 
 
         

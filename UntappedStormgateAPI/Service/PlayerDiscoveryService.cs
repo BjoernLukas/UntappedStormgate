@@ -31,7 +31,7 @@ namespace UntappedAPI.Service
             //STEP 2: work on que while also adding new players to the que
             while (_playerIdsQueue.Count != 0)
             {
-                Console.WriteLine($"Total Players found so far {_totalProgressService._newPlayersFound}!");
+                Console.WriteLine($"Total Players found so far {_totalProgressService.newPlayersFound}!");
                 await StartWorkingOnQueue();
                 
             }
@@ -46,7 +46,7 @@ namespace UntappedAPI.Service
             //TODO: Make this a ConsoleLogger wrapper
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine($"Queue status: Id's in Queue = {_playerIdsQueue.Count} -- Players saved this session = {_amountOfNewPlayersFound}");
-            Console.ForegroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
 
 
             string currentPlayerId = _playerIdsQueue.Dequeue();
@@ -54,21 +54,20 @@ namespace UntappedAPI.Service
 
             //TODO: improve this so there is not 2x db calls
             var isPlayerIdWorthLookingUp = IsWorthDoingLookUpSearch(currentPlayerId);
-
             if (isPlayerIdWorthLookingUp is false)
             {
-
                 Console.WriteLine($"Player {currentPlayerId} not worth looking up ");
-                return ; //Do nothing  
+                AddPlayerIdsToQue();
+                return ; 
             }
 
 
             //**Medium Snapshot - All players at this point are ether Light unknow and worth saving to db
-            var PlayerSnapshotExsists = _untappedDbContext.Set<PlayerSnapshot>().Any(snapshot => snapshot.ProfileId == currentPlayerId);
+            var snapshotExists = _untappedDbContext.Set<PlayerSnapshot>().Any(snapshot => snapshot.ProfileId == currentPlayerId);
 
 
 
-            if (PlayerSnapshotExsists is false)
+            if (snapshotExists is false)
             {
                 await CreateAndSaveMediumSnapshot(currentPlayerId);
 
@@ -81,19 +80,19 @@ namespace UntappedAPI.Service
 
             await CreateAndSaveLightSnapshots(currentPlayerId);
 
-            await AddPlayerIdsToQue();
+            AddPlayerIdsToQue();
 
-            _totalProgressService._newPlayersFound = _amountOfNewPlayersFound;
-            Console.WriteLine($"Total Players found so far {_totalProgressService._newPlayersFound}!");
+            _totalProgressService.newPlayersFound =+ _amountOfNewPlayersFound;
+            Console.WriteLine($"Total Players found so far {_totalProgressService.newPlayersFound}!");
 
             return ;
         }
 
         /// <summary>
-        /// Will add new Id if they are not in the que allready
+        /// Will add new Id if they are not in the que already
         /// </summary>
         /// <returns></returns>
-        private async Task AddPlayerIdsToQue()
+        private void AddPlayerIdsToQue()
         {
             var lightRichnessPlayerIds = _untappedDbContext.Set<PlayerSnapshot>()
                 .Where(snapshot => snapshot.InfoRichness == InfoRichness.Light_NameAndIdKnow)
@@ -103,6 +102,8 @@ namespace UntappedAPI.Service
 
             foreach (var playerId in lightRichnessPlayerIds.Where(playerId => _playerIdsQueue.Contains(playerId) is false))
             { _playerIdsQueue.Enqueue(playerId); }
+
+
         }
 
         private async Task CreateAndSaveLightSnapshots(string currentPlayerId)
