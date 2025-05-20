@@ -29,27 +29,7 @@ public class FindActivePlayersController : ControllerBase
         var result = await _playerDiscoveryService.StartQueueOnSpecificPlayer(playerId); 
 
         return Ok(result);
-    }
-
-    /// <summary>
-    /// Test the DbContext with a player.
-    /// </summary>
-    /// <returns></returns>
-    [Obsolete]
-    [HttpGet("SaveSnapshotOnlyOnePlayer")]
-    public IActionResult SaveSnapshotOnlyOnePlayer()
-    {
-        // Call the method to test the DbContext with a player       
-
-        //var playerSnapshot = CreateMediumSnapshotByPlayerLookUpDto(profileId).Result;
-
-        //_untappedDbContext.Set<PlayerSnapshot>().Update(playerSnapshot);
-        //_untappedDbContext.SaveChanges();
-
-
-        return Ok();
-    }
-
+    }  
 
     [HttpGet("ConsoleTest")]
     public IActionResult LogConsoleTest()
