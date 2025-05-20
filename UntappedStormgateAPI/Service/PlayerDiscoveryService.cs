@@ -9,17 +9,18 @@ namespace UntappedAPI.Service
     {
         private readonly UntappedApiService _untappedApiService;
         private readonly UntappedDbContext _untappedDbContext;
-        private readonly TotalProgressService _totalProgressService;
+        private readonly CountService _countService;
         private Queue<string> _playerIdsQueue;
-        private int _amountOfNewPlayersFound = 0;
+        private int _PlayersFoundForCurrentId;
 
 
-        public PlayerDiscoveryService(UntappedApiService dataCollectorService, UntappedDbContext untappedDbContext, TotalProgressService totalProgressService)
+
+        public PlayerDiscoveryService(UntappedApiService dataCollectorService, UntappedDbContext untappedDbContext, CountService countService)
         {
             _untappedApiService = dataCollectorService;
             _playerIdsQueue = new Queue<string>();
             _untappedDbContext = untappedDbContext;
-            _totalProgressService = totalProgressService;
+            _countService = countService;
         }
 
 
@@ -30,10 +31,8 @@ namespace UntappedAPI.Service
 
             //STEP 2: work on que while also adding new players to the que
             while (_playerIdsQueue.Count != 0)
-            {
-                Console.WriteLine($"Total Players found so far {_totalProgressService.newPlayersFound}!");
-                await StartWorkingOnQueue();
-                
+            {                
+                await StartWorkingOnQueue();                
             }
 
             return $"StartWorkingOnQueue done, no more in Queue";
@@ -41,11 +40,13 @@ namespace UntappedAPI.Service
 
 
         public async Task StartWorkingOnQueue()
-        {            
+        {
+            _PlayersFoundForCurrentId = 0;
+
 
             //TODO: Make this a ConsoleLogger wrapper
             Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine($"Queue status: Id's in Queue = {_playerIdsQueue.Count} -- Players saved this session = {_amountOfNewPlayersFound}");
+            Console.WriteLine($"Queue status: Id's in Queue = {_playerIdsQueue.Count} -- Players saved this session = {_countService.TotalPlayersFound}");
             Console.ForegroundColor = ConsoleColor.White;
 
 
@@ -81,9 +82,8 @@ namespace UntappedAPI.Service
             await CreateAndSaveLightSnapshots(currentPlayerId);
 
             AddPlayerIdsToQue();
-
-            _totalProgressService.newPlayersFound =+ _amountOfNewPlayersFound;
-            Console.WriteLine($"Total Players found so far {_totalProgressService.newPlayersFound}!");
+            
+            _countService.TotalPlayersFound += _PlayersFoundForCurrentId;            
 
             return ;
         }
@@ -125,7 +125,7 @@ namespace UntappedAPI.Service
             await _untappedDbContext.SaveChangesAsync();
 
 
-            _amountOfNewPlayersFound = +notYetKnownPlayerSnapshot.Count;
+            _PlayersFoundForCurrentId += notYetKnownPlayerSnapshot.Count;
             Console.WriteLine($"current Player has meet {allOpponentSet_Id_Name.Count} Opponents --  {notYetKnownPlayerSnapshot.Count} was new discoveries");
         }
 
@@ -157,7 +157,7 @@ namespace UntappedAPI.Service
             _untappedDbContext.Add(mediumPlayerSnapshot);
             await _untappedDbContext.SaveChangesAsync();
 
-            _amountOfNewPlayersFound++;
+            _PlayersFoundForCurrentId++;
             Console.WriteLine($"mediumPlayerSnapshot was saved: {mediumPlayerSnapshot.ProfileId} -- {mediumPlayerSnapshot.PlayerName} ");
         }
 

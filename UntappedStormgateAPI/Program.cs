@@ -26,7 +26,7 @@ namespace UntappedAPI
             // custom Services
             builder.Services.AddScoped<UntappedApiService>();
             builder.Services.AddScoped<PlayerDiscoveryService>();
-            builder.Services.AddSingleton<TotalProgressService>();
+            builder.Services.AddSingleton<CountService>();
 
 
             // Register the DbContext with dependency injection  
